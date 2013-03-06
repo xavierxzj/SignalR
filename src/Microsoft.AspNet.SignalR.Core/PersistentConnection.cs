@@ -462,21 +462,21 @@ namespace Microsoft.AspNet.SignalR
 
         private Task ProcessNegotiationRequest(HostContext context)
         {
+            var payload = new Dictionary<string, object>();
+
             // Total amount of time without a keep alive before the client should attempt to reconnect in seconds.
             var keepAliveTimeout = _configurationManager.KeepAliveTimeout();
             string connectionId = Guid.NewGuid().ToString("d");
             string connectionToken = connectionId + ':' + GetUserIdentity(context);
 
-            var payload = new
-            {
-                Url = context.Request.LocalPath.Replace("/negotiate", ""),
-                ConnectionToken = ProtectedData.Protect(connectionToken, Purposes.ConnectionToken),
-                ConnectionId = connectionId,
-                KeepAliveTimeout = keepAliveTimeout != null ? keepAliveTimeout.Value.TotalSeconds : (double?)null,
-                DisconnectTimeout = _configurationManager.DisconnectTimeout.TotalSeconds,
-                TryWebSockets = _transportManager.SupportsTransport(WebSocketsTransportName) && context.Environment.SupportsWebSockets(),
-                ProtocolVersion = "1.2"
-            };
+            payload["Url"] = context.Request.Url.LocalPath.Replace("/negotiate", "");
+            payload["ConnectionToken"] = ProtectedData.Protect(connectionToken, Purposes.ConnectionToken);
+            payload["ConnectionId"] = connectionId;
+            payload["KeepAliveTimeout"] = keepAliveTimeout != null ? keepAliveTimeout.Value.TotalSeconds : (double?)null;
+            payload["DisconnectTimeout"] = _configurationManager.DisconnectTimeout.TotalSeconds;
+            payload["TryWebSockets"] = _transportManager.SupportsTransport(WebSocketsTransportName) && context.SupportsWebSockets();
+            payload["WebSocketServerUrl"] = context.WebSocketServerUrl();
+            payload["ProtocolVersion"] = "1.2";
 
             if (!String.IsNullOrEmpty(context.Request.QueryString["callback"]))
             {
