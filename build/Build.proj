@@ -138,8 +138,10 @@
       <!-- If the Build target isn't run first, package restore will fail -->
       <BuildTargets>Build;pipelinePreDeployCopyAllFilesToOneFolder</BuildTargets>
       <BuildProperties>Configuration=$(Configuration);ArtifactsDir=$(ProjectArtifactsDir);SolutionDir=$(ProjectRoot)\;$(ExtraProperties);_PackageTempDir=$(ProjectArtifactsDir)\%(FileName);AutoParameterizationWebConfigConnectionStrings=false;MSBuildCommunityTasksPath=$(MSBuildCommunityTasksPath)</BuildProperties>
-      <Sample>true</Sample>
-    </Projects>
+    <!--<BuildProjects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.Silverlight5\Microsoft.AspNet.SignalR.Client.Silverlight5.csproj"
+              Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\Silverlight\v5.0\Microsoft.Silverlight.CSharp.targets')"></BuildProjects>-->
+    <!--<BuildProjects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.WP8\Microsoft.AspNet.SignalR.Client.WP8.csproj"
+                  Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\WindowsPhone\v8.0\Microsoft.WindowsPhone.v8.0.Overrides.targets')"></BuildProjects>-->
 
     <!-- Add any sample projects that have not been defined manually -->
     <Projects Include="$(ProjectRoot)\sample\**\*.csproj" Exclude="@(Projects)">
