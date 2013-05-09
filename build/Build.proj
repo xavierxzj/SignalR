@@ -124,14 +124,14 @@
     <Projects Include="$(ProjectRoot)\samples\Microsoft.AspNet.SignalR.Client.Silverlight.Sample\Microsoft.AspNet.SignalR.Client.Silverlight.Sample.csproj">
       <Build Condition="$(Silverlight5SDKInstalled) != 'true'">false</Build>
       <Sample>true</Sample>
-      <Platform>SL5</Platform>
+    <BuildProjects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.Portable\Microsoft.AspNet.SignalR.Client.Portable.csproj"></BuildProjects>
     </Projects>
     <Projects Include="$(ProjectRoot)\samples\Microsoft.AspNet.SignalR.Client.WP8.Sample\Microsoft.AspNet.SignalR.Client.WP8.Sample.csproj">
       <Build Condition="$(WP8SDKInstalled) != 'true'">false</Build>
       <Sample>true</Sample>
       <Platform>WP8</Platform>
     </Projects>
-
+    
     <!-- Asp.Net sample projects -->
     <Projects Include="$(ProjectRoot)\samples\Microsoft.AspNet.SignalR.LoadTestHarness\Microsoft.AspNet.SignalR.LoadTestHarness.csproj;
                        $(ProjectRoot)\samples\Microsoft.AspNet.SignalR.Samples\Microsoft.AspNet.SignalR.Samples.csproj">
