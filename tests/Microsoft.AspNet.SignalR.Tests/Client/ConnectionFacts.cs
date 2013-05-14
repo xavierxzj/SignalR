@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Client;
+using Microsoft.AspNet.SignalR.Client.Http;
 using Microsoft.AspNet.SignalR.Client.Transports;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Moq;
@@ -15,6 +16,29 @@ namespace Microsoft.AspNet.SignalR.Tests
 {
     public class ConnectionFacts : IDisposable
     {
+        [Fact]
+        public void NegotiatePassesClientProtocol()
+        {
+            var connection = new Client.Connection("http://test");
+            var mre = new ManualResetEventSlim();
+
+            try
+            {
+                connection.Start(new LongPollingTransport(new UrlInspectingHttpClient((url) =>
+                {
+                    Assert.True(url.Contains("clientProtocol=" + ((Client.IConnection)connection).Protocol.ToString()));
+
+                    mre.Set();
+                })));
+            }
+            catch 
+            {
+                // Swallow exceptions because the custom http client that we pass will throw unimplemented exceptions.
+            }
+
+            Assert.True(mre.Wait(TimeSpan.FromSeconds(2)));
+        }
+
         [Fact]
         public void ConnectionStateChangedEventIsCalledWithAppropriateArguments()
         {
@@ -111,7 +135,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 var aggEx = Assert.Throws<AggregateException>(() => connection.Start(transport.Object).Wait());
                 var ex = aggEx.Unwrap();
                 Assert.IsType(typeof(InvalidOperationException), ex);
-                Assert.Equal("You are using a version of the client that isn't compatible with the server. Client version 1.2, server version null.", ex.Message);
+                Assert.Equal("You are using a version of the client that isn't compatible with the server. Client version " + ((Client.IConnection)connection).Protocol.ToString() + ", server version null.", ex.Message);
             }
 
             [Fact]
@@ -156,7 +180,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = "1.2",
+                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -178,7 +202,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = "1.2",
+                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -204,7 +228,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = "1.2",
+                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -223,7 +247,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = "1.2",
+                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -243,7 +267,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = "1.2",
+                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -284,6 +308,32 @@ namespace Microsoft.AspNet.SignalR.Tests
         public void Dispose()
         {
             Dispose(true);
+        }
+
+        private class UrlInspectingHttpClient : IHttpClient
+        {
+            private Action<string> _onUrlGet;
+
+            public UrlInspectingHttpClient(Action<string> onUrlGet)
+            {
+                _onUrlGet = onUrlGet;
+            }
+
+            public void Initialize(Client.IConnection connection)
+            {
+            }
+
+            public Task<IResponse> Get(string url, Action<Client.Http.IRequest> prepareRequest, bool isLongRunning)
+            {
+                _onUrlGet(url);
+
+                throw new NotImplementedException();
+            }
+
+            public Task<IResponse> Post(string url, Action<Client.Http.IRequest> prepareRequest, System.Collections.Generic.IDictionary<string, string> postData, bool isLongRunning)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

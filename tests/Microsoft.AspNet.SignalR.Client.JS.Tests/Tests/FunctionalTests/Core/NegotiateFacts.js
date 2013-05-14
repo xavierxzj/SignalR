@@ -53,5 +53,56 @@
                 connection.stop();
             };
         });
+
+        QUnit.asyncTimeoutTest(transport + " transport negotiate passes client protocol.", testUtilities.defaultTestTimeout, function (end, assert, testName) {
+            var connection = testUtilities.createConnection("signalr", end, assert, testName),
+                // Need to ensure that we have a reference to the savedAjax method so we can then reset it in end()
+                savedAjax = $.ajax;
+
+            $.ajax = function (url, settings) {
+                if (!settings) {
+                    settings = url;
+                    url = settings.url;
+                }
+
+                // Check if it's the negotiate request;
+                if (url.indexOf("/negotiate") >= 0) {
+                    // Verify that the query string parameter on the connection is passed via the ajax request
+                    assert.ok(url.indexOf("clientProtocol=" + $.signalR.protocol) >= 0, "Client protocol passed in negotiate request");
+                    // Let the ajax request finish out
+                    setTimeout(end, 0);
+                }
+
+                // Persist the request through to the original ajax request
+                savedAjax.call(this, url, settings);
+            };
+
+            connection.start({ transport: transport });
+
+            return function () {
+                $.ajax = savedAjax;
+                connection.stop();
+            };
+        });
+
+        QUnit.asyncTimeoutTest(transport + ": connection fails to start with invalid protocol.", testUtilities.defaultTestTimeout, function (end, assert, testName) {
+            var connection = testUtilities.createConnection("signalr", end, assert, testName, false),
+                savedProtocol = $.signalR.protocol;
+
+            $.signalR.protocol = 1337;
+
+            connection.start({ transport: transport }).done(function() {
+                assert.ok(false, "Transport started successfully.");
+            }).fail(function() {
+                assert.comment("Transport failed to start with incorrect protocol.");
+                end();
+            });
+
+            return function () {
+                $.signalR.protocol = savedProtocol;
+                connection.stop();
+            };
+        });
+
     });
 })($, window);
