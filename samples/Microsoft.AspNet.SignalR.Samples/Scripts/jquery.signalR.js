@@ -471,14 +471,12 @@
 
             var url = connection.url + "/negotiate";
 
-            url = signalR.transports._logic.addQs(url, connection);
+            url = signalR.transports._logic.addQs(url, connection.qs);
 
             // Add the client version to the negotiate request.  We utilize the same addQs method here
             // so that it can append the clientVersion the appropriately way to the URL
             url = signalR.transports._logic.addQs(url, {
-                qs: {
-                    clientProtocol: $.signalR.protocol
-                }
+                clientProtocol: $.signalR.protocol
             });
 
             connection.log("Negotiating with '" + url + "'.");
@@ -821,7 +819,7 @@
                 url = baseUrl + connection.appRelativeUrl + "/ping",
                 deferral = $.Deferred();
 
-            url = this.addQs(url, connection);
+            url = this.addQs(url, connection.qs);
 
             $.ajax({
                 url: url,
@@ -849,29 +847,29 @@
             return deferral.promise();
         },
 
-        addQs: function (url, connection) {
+        addQs: function (url, qs) {
             var appender = url.indexOf("?") !== -1 ? "&" : "?",
                 firstChar;
 
-            if (!connection.qs) {
+            if (!qs) {
                 return url;
             }
 
-            if (typeof (connection.qs) === "object") {
-                return url + appender + $.param(connection.qs);
+            if (typeof (qs) === "object") {
+                return url + appender + $.param(qs);
             }
 
-            if (typeof (connection.qs) === "string") {
-                firstChar = connection.qs.charAt(0);
+            if (typeof (qs) === "string") {
+                firstChar = qs.charAt(0);
 
                 if (firstChar === "?" || firstChar === "&") {
                     appender = "";
                 }
 
-                return url + appender + connection.qs;
+                return url + appender + qs;
             }
 
-            throw new Error("Connections query string property must be either a string or object.");
+            throw new Error("Query string property must be either a string or object.");
         },
 
         getUrl: function (connection, transport, reconnecting, poll) {
@@ -903,7 +901,7 @@
                 }
             }
             url += "?" + qs;
-            url = transportLogic.addQs(url, connection);
+            url = transportLogic.addQs(url, connection.qs);
             url += "&tid=" + Math.floor(Math.random() * 11);
             return url;
         },
@@ -928,7 +926,7 @@
 
         ajaxSend: function (connection, data) {
             var url = connection.url + "/send" + "?transport=" + connection.transport.name + "&connectionToken=" + window.encodeURIComponent(connection.token);
-            url = this.addQs(url, connection);
+            url = this.addQs(url, connection.qs);
             return $.ajax({
                 url: url,
                 global: false,
@@ -964,7 +962,7 @@
             async = typeof async === "undefined" ? true : async;
 
             var url = connection.url + "/abort" + "?transport=" + connection.transport.name + "&connectionToken=" + window.encodeURIComponent(connection.token);
-            url = this.addQs(url, connection);
+            url = this.addQs(url, connection.qs);
             $.ajax({
                 url: url,
                 async: async,

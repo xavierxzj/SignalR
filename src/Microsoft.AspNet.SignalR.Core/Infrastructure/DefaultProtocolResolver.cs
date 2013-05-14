@@ -2,18 +2,18 @@
 
 namespace Microsoft.AspNet.SignalR.Infrastructure
 {
-    public class DefaultProtocolResolver : IProtocolResolver
+    public class ProtocolResolver
     {
         private const string ProtocolQueryParameter = "clientProtocol";
         private readonly Version _minSupportedProtocol;
         private readonly Version _maxSupportedProtocol;
 
-        public DefaultProtocolResolver() :
+        public ProtocolResolver() :
             this(new Version(1, 2), new Version(1, 3))
         {
         }
 
-        public DefaultProtocolResolver(Version min, Version max)
+        public ProtocolResolver(Version min, Version max)
         {
             _minSupportedProtocol = min;
             _maxSupportedProtocol = max;

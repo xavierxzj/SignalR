@@ -28,12 +28,12 @@ namespace Microsoft.AspNet.SignalR
     {
         private const string WebSocketsTransportName = "webSockets";
         private static readonly char[] SplitChars = new[] { ':' };
+        private static readonly ProtocolResolver _protocolResolver = new ProtocolResolver();
 
         private IConfigurationManager _configurationManager;
         private ITransportManager _transportManager;
         private bool _initialized;
-        private IServerCommandHandler _serverMessageHandler;
-        private IProtocolResolver _protocolResolver;
+        private IServerCommandHandler _serverMessageHandler;        
 
         public virtual void Initialize(IDependencyResolver resolver)
         {
@@ -57,7 +57,6 @@ namespace Microsoft.AspNet.SignalR
             _configurationManager = resolver.Resolve<IConfigurationManager>();
             _transportManager = resolver.Resolve<ITransportManager>();
             _serverMessageHandler = resolver.Resolve<IServerCommandHandler>();
-            _protocolResolver = resolver.Resolve<IProtocolResolver>();
 
             _initialized = true;
         }

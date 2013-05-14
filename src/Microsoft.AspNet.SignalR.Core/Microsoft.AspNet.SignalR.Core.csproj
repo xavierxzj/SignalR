@@ -93,7 +93,6 @@
     <Compile Include="Cookie.cs" />
     <Compile Include="Infrastructure\IBinaryWriter.cs" />
     <Compile Include="Infrastructure\IProtectedData.cs" />
-    <Compile Include="Infrastructure\IProtocolResolver.cs" />
     <Compile Include="Infrastructure\ListHelper.cs" />
     <Compile Include="Infrastructure\PrefixHelper.cs" />
     <Compile Include="Infrastructure\Purposes.cs" />

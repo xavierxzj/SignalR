@@ -470,14 +470,12 @@
 
             var url = connection.url + "/negotiate";
 
-            url = signalR.transports._logic.addQs(url, connection);
+            url = signalR.transports._logic.addQs(url, connection.qs);
 
             // Add the client version to the negotiate request.  We utilize the same addQs method here
             // so that it can append the clientVersion the appropriately way to the URL
             url = signalR.transports._logic.addQs(url, {
-                qs: {
-                    clientProtocol: $.signalR.protocol
-                }
+                clientProtocol: $.signalR.protocol
             });
 
             connection.log("Negotiating with '" + url + "'.");

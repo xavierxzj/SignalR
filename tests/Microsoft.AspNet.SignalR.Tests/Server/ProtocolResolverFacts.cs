@@ -22,7 +22,7 @@ namespace Microsoft.AspNet.SignalR.Tests.Server
             var queryStrings = new NameValueCollection();
             var minProtocolVersion = new Version(minProtocol);
             var maxProtocolVersion = new Version(maxProtocol);
-            var protocolResolver = new DefaultProtocolResolver(minProtocolVersion, maxProtocolVersion);
+            var protocolResolver = new ProtocolResolver(minProtocolVersion, maxProtocolVersion);
 
             queryStrings.Add("clientProtocol", clientProtocol);
 
