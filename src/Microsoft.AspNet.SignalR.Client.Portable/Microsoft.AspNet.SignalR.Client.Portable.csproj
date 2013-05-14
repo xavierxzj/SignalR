@@ -5,7 +5,7 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9E262DDB-1C6E-4D4E-A3FA-4649C833D9EF}</ProjectGuid>
+    <ProjectGuid>{56126C8D-8C30-4C8B-BEC9-AAF40ECE1241}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PortableSLWPWinRT</RootNamespace>
@@ -154,6 +154,9 @@
     </Compile>
     <Compile Include="..\Microsoft.AspNet.SignalR.Client\Transports\AutoTransport.cs">
       <Link>Transports\AutoTransport.cs</Link>
+    </Compile>
+    <Compile Include="..\Microsoft.AspNet.SignalR.Client\Transports\ConnectingMessageBuffer.cs">
+      <Link>Transports\ConnectingMessageBuffer.cs</Link>
     </Compile>
     <Compile Include="..\Microsoft.AspNet.SignalR.Client\Transports\HttpBasedTransport.cs">
       <Link>Transports\HttpBasedTransport.cs</Link>

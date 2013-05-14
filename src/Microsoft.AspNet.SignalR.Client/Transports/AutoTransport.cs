@@ -30,7 +30,9 @@ namespace Microsoft.AspNet.SignalR.Client.Transports
 #if NET45
                 new WebSocketTransport(httpClient),
 #endif
-                new ServerSentEventsTransport(httpClient), 
+#if !PORTABLE
+                new ServerSentEventsTransport(httpClient),
+#endif
                 new LongPollingTransport(httpClient) 
                 };
         }
