@@ -32,6 +32,8 @@ namespace Microsoft.AspNet.SignalR.Client
     {
         internal static readonly TimeSpan DefaultAbortTimeout = TimeSpan.FromSeconds(30);
 
+        private static readonly Version _protocol = new Version(1, 3);
+
         private static Version _assemblyVersion;
 
         private IClientTransport _transport;
@@ -160,6 +162,14 @@ namespace Microsoft.AspNet.SignalR.Client
             TraceLevel = TraceLevels.All;
             TraceWriter = new DebugTextWriter();
             Headers = new HeaderDictionary(this);
+        }
+
+        Version IConnection.Protocol
+        {
+            get
+            {
+                return _protocol;
+            }
         }
 
         /// <summary>
@@ -445,11 +455,11 @@ namespace Microsoft.AspNet.SignalR.Client
 
             if (String.IsNullOrEmpty(versionString) ||
                 !TryParseVersion(versionString, out version) ||
-                !(version.Major == 1 && version.Minor == 2))
+                version != _protocol)
             {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
                                                                   Resources.Error_IncompatibleProtocolVersion,
-                                                                  "1.2",
+                                                                  _protocol.ToString(),
                                                                   versionString ?? "null"));
             }
         }
