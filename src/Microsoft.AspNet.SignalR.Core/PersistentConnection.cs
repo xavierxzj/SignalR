@@ -33,6 +33,7 @@ namespace Microsoft.AspNet.SignalR
         private ITransportManager _transportManager;
         private bool _initialized;
         private IServerCommandHandler _serverMessageHandler;
+        private IProtocolResolver _protocolResolver;
 
         public virtual void Initialize(IDependencyResolver resolver)
         {
@@ -56,6 +57,7 @@ namespace Microsoft.AspNet.SignalR
             _configurationManager = resolver.Resolve<IConfigurationManager>();
             _transportManager = resolver.Resolve<ITransportManager>();
             _serverMessageHandler = resolver.Resolve<IServerCommandHandler>();
+            _protocolResolver = resolver.Resolve<IProtocolResolver>();
 
             _initialized = true;
         }
@@ -475,7 +477,7 @@ namespace Microsoft.AspNet.SignalR
                 KeepAliveTimeout = keepAliveTimeout != null ? keepAliveTimeout.Value.TotalSeconds : (double?)null,
                 DisconnectTimeout = _configurationManager.DisconnectTimeout.TotalSeconds,
                 TryWebSockets = _transportManager.SupportsTransport(WebSocketsTransportName) && context.Environment.SupportsWebSockets(),
-                ProtocolVersion = "1.2"
+                ProtocolVersion = _protocolResolver.Resolve(context.Request).ToString()
             };
 
             if (!String.IsNullOrEmpty(context.Request.QueryString["callback"]))

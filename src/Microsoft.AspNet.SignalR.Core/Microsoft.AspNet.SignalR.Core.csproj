@@ -85,6 +85,7 @@
     <Compile Include="Infrastructure\ConnectionManager.cs" />
     <Compile Include="ConnectionMessage.cs" />
     <Compile Include="Infrastructure\DataProtectionProviderProtectedData.cs" />
+    <Compile Include="Infrastructure\DefaultProtocolResolver.cs" />
     <Compile Include="Infrastructure\DiffPair.cs" />
     <Compile Include="Infrastructure\DiffSet.cs" />
     <Compile Include="GlobalHost.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Cookie.cs" />
     <Compile Include="Infrastructure\IBinaryWriter.cs" />
     <Compile Include="Infrastructure\IProtectedData.cs" />
+    <Compile Include="Infrastructure\IProtocolResolver.cs" />
     <Compile Include="Infrastructure\ListHelper.cs" />
     <Compile Include="Infrastructure\PrefixHelper.cs" />
     <Compile Include="Infrastructure\Purposes.cs" />

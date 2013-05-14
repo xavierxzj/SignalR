@@ -69,6 +69,9 @@ namespace Microsoft.AspNet.SignalR
             var ackHandler = new Lazy<AckHandler>();
             Register(typeof(IAckHandler), () => ackHandler.Value);
 
+            var protocolResolver = new Lazy<DefaultProtocolResolver>();
+            Register(typeof(IProtocolResolver), () => protocolResolver.Value);
+
             var perfCounterWriter = new Lazy<PerformanceCounterManager>(() => new PerformanceCounterManager(this));
             Register(typeof(IPerformanceCounterManager), () => perfCounterWriter.Value);
         }
