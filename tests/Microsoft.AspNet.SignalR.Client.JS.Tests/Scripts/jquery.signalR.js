@@ -11,6 +11,7 @@
  */
 
 /// <reference path="Scripts/jquery-1.6.4.js" />
+/// <reference path="jquery.signalR.version.js" />
 (function ($, window) {
     "use strict";
 
@@ -217,7 +218,7 @@
         that.tryBuffer = function (message) {
             if (connection.state === $.signalR.connectionState.connecting) {
                 buffer.push(message);
-                
+
                 return true;
             }
 
@@ -245,7 +246,7 @@
             this.url = url;
             this.qs = qs;
             this._ = {
-                connectingMessageBuffer: new ConnectingMessageBuffer(this, function(message) {
+                connectingMessageBuffer: new ConnectingMessageBuffer(this, function (message) {
                     $connection.triggerHandler(events.onReceived, [message]);
                 })
             };
@@ -254,7 +255,7 @@
             }
         },
 
-        _parseResponse : function (response) {
+        _parseResponse: function (response) {
             var that = this;
 
             if (!response) {
@@ -266,7 +267,7 @@
             }
         },
 
-        json : window.JSON,
+        json: window.JSON,
 
         isCrossDomain: function (url, against) {
             /// <summary>Checks if url is cross domain</summary>
@@ -472,6 +473,14 @@
 
             url = signalR.transports._logic.addQs(url, connection);
 
+            // Add the client version to the negotiate request.  We utilize the same addQs method here
+            // so that it can append the clientVersion the appropriately way to the URL
+            url = signalR.transports._logic.addQs(url, {
+                qs: {
+                    clientProtocol: $.signalR.protocol
+                }
+            });
+
             connection.log("Negotiating with '" + url + "'.");
             $.ajax({
                 url: url,
@@ -519,9 +528,9 @@
                         keepAliveData.activated = false;
                     }
 
-                    if (!res.ProtocolVersion || res.ProtocolVersion !== "1.2") {
-                        $(connection).triggerHandler(events.onError, ["You are using a version of the client that isn't compatible with the server. Client version 1.2, server version " + res.ProtocolVersion + "."]);
-                        deferred.reject("You are using a version of the client that isn't compatible with the server. Client version 1.2, server version " + res.ProtocolVersion + ".");
+                    if (!res.ProtocolVersion || res.ProtocolVersion !== $.signalR.protocol) {
+                        $(connection).triggerHandler(events.onError, ["You are using a version of the client that isn't compatible with the server. Client version " + $.signalR.protocol + ", server version " + res.ProtocolVersion + "."]);
+                        deferred.reject("You are using a version of the client that isn't compatible with the server. Client version " + $.signalR.protocol + ", server version " + res.ProtocolVersion + ".");
                         return;
                     }
 
@@ -2172,4 +2181,5 @@
 /// <reference path="jquery.signalR.core.js" />
 (function ($) {
     $.signalR.version = "2.0.0-beta1";
+    $.signalR.protocol = "1.3";
 }(window.jQuery));
