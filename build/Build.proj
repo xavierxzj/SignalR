@@ -80,21 +80,13 @@
       <CopyArtifacts>false</CopyArtifacts>
     </Projects>
     <!-- Only build the following clients if the SDK is installed -->
-    <Projects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.Portable\Microsoft.AspNet.SignalR.Client.Portable.csproj">
-      <Build Condition="!$(WP8SDKInstalled)">false</Build>
-      <Build Condition="!$(WinRTSDKInstalled)">false</Build>
-      <Build Condition="!$(Silverlight5SDKInstalled)">false</Build>
-      <Platform>WP8, SL5, WinRT</Platform>
-      <RunFxCop>false</RunFxCop>
-    </Projects>
-
     <!--<Projects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.Silverlight5\Microsoft.AspNet.SignalR.Client.Silverlight5.csproj">
       <Build Condition="!$(Silverlight5SDKInstalled)">false</Build>
       <Platform>SL5</Platform>
       --><!-- HttpClient causes issues with running FxCop on the SL5 and WP8 clients --><!--
       <RunFxCop>false</RunFxCop>
-    </Projects>
-    <Projects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.WP8\Microsoft.AspNet.SignalR.Client.WP8.csproj">
+    </Projects>-->
+    <!--<Projects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.WP8\Microsoft.AspNet.SignalR.Client.WP8.csproj">
       <Build Condition="!$(WP8SDKInstalled)">false</Build>
       <Platform>WP8</Platform>
       <RunFxCop>false</RunFxCop>
@@ -103,6 +95,13 @@
       <Build Condition="!$(WinRTSDKInstalled)">false</Build>
       <Platform>WinRT</Platform>
     </Projects>-->
+    <Projects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.Portable\Microsoft.AspNet.SignalR.Client.Portable.csproj">
+      <Build Condition="!$(WinRTSDKInstalled)">false</Build>
+      <Build Condition="!$(WP8SDKInstalled)">false</Build>
+      <Build Condition="!$(Silverlight5SDKInstalled)">false</Build>
+      <Platform>WinRT, SL5, WP8</Platform>
+      <RunFxCop>false</RunFxCop>
+    </Projects>
     <!-- The SignalR .NET client is the only remaining project that targets .NET 4.0 starting in SignalR 2.0 -->
     <Projects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client\Microsoft.AspNet.SignalR.Client.csproj">
       <Platform>Net40</Platform>
@@ -132,27 +131,23 @@
     <Projects Include="$(ProjectRoot)\samples\Microsoft.AspNet.SignalR.Client.Silverlight.Sample\Microsoft.AspNet.SignalR.Client.Silverlight.Sample.csproj">
       <Build Condition="$(Silverlight5SDKInstalled) != 'true'">false</Build>
       <Sample>true</Sample>
-   
+      <Platform>SL5</Platform>
     </Projects>
-    <!--<Projects Include="$(ProjectRoot)\samples\Microsoft.AspNet.SignalR.Client.WP8.Sample\Microsoft.AspNet.SignalR.Client.WP8.Sample.csproj">
+    <Projects Include="$(ProjectRoot)\samples\Microsoft.AspNet.SignalR.Client.WP8.Sample\Microsoft.AspNet.SignalR.Client.WP8.Sample.csproj">
       <Build Condition="$(WP8SDKInstalled) != 'true'">false</Build>
       <Sample>true</Sample>
       <Platform>WP8</Platform>
-    </Projects>-->
+    </Projects>
 
     <!-- Asp.Net sample projects -->
     <Projects Include="$(ProjectRoot)\samples\Microsoft.AspNet.SignalR.LoadTestHarness\Microsoft.AspNet.SignalR.LoadTestHarness.csproj;
                        $(ProjectRoot)\samples\Microsoft.AspNet.SignalR.Samples\Microsoft.AspNet.SignalR.Samples.csproj">
-
       <!-- If the Build target isn't run first, package restore will fail -->
       <BuildTargets>Build;pipelinePreDeployCopyAllFilesToOneFolder</BuildTargets>
       <BuildProperties>Configuration=$(Configuration);ArtifactsDir=$(ProjectArtifactsDir);SolutionDir=$(ProjectRoot)\;$(ExtraProperties);_PackageTempDir=$(ProjectArtifactsDir)\%(FileName);AutoParameterizationWebConfigConnectionStrings=false;MSBuildCommunityTasksPath=$(MSBuildCommunityTasksPath)</BuildProperties>
-      <!--<BuildProjects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.Silverlight5\Microsoft.AspNet.SignalR.Client.Silverlight5.csproj"
-              Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\Silverlight\v5.0\Microsoft.Silverlight.CSharp.targets')"></BuildProjects>-->
-      <!--<BuildProjects Include="$(ProjectRoot)\src\Microsoft.AspNet.SignalR.Client.WP8\Microsoft.AspNet.SignalR.Client.WP8.csproj"
-                  Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\WindowsPhone\v8.0\Microsoft.WindowsPhone.v8.0.Overrides.targets')"></BuildProjects>-->
+      <Sample>true</Sample>
     </Projects>
-    
+
     <!-- Add any sample projects that have not been defined manually -->
     <Projects Include="$(ProjectRoot)\sample\**\*.csproj" Exclude="@(Projects)">
       <Sample>true</Sample>
