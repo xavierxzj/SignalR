@@ -474,7 +474,7 @@
             url = signalR.transports._logic.addQs(url, connection.qs);
 
             // Add the client version to the negotiate request.  We utilize the same addQs method here
-            // so that it can append the clientVersion the appropriately way to the URL
+            // so that it can append the clientVersion appropriately to the URL
             url = signalR.transports._logic.addQs(url, {
                 clientProtocol: $.signalR.protocol
             });
