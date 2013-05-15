@@ -4,5 +4,4 @@
 /// <reference path="jquery.signalR.core.js" />
 (function ($) {
     $.signalR.version = "##VERSION##";
-    $.signalR.protocol = "1.3";
 }(window.jQuery));

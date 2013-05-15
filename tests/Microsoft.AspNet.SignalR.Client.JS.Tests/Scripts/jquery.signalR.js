@@ -302,6 +302,8 @@
         state: signalR.connectionState.disconnected,
 
         keepAliveData: {},
+        
+        clientProtocol: "1.3",
 
         reconnectDelay: 2000,
 
@@ -476,7 +478,7 @@
             // Add the client version to the negotiate request.  We utilize the same addQs method here
             // so that it can append the clientVersion appropriately to the URL
             url = signalR.transports._logic.addQs(url, {
-                clientProtocol: $.signalR.protocol
+                clientProtocol: connection.clientProtocol
             });
 
             connection.log("Negotiating with '" + url + "'.");
@@ -526,9 +528,9 @@
                         keepAliveData.activated = false;
                     }
 
-                    if (!res.ProtocolVersion || res.ProtocolVersion !== $.signalR.protocol) {
-                        $(connection).triggerHandler(events.onError, ["You are using a version of the client that isn't compatible with the server. Client version " + $.signalR.protocol + ", server version " + res.ProtocolVersion + "."]);
-                        deferred.reject("You are using a version of the client that isn't compatible with the server. Client version " + $.signalR.protocol + ", server version " + res.ProtocolVersion + ".");
+                    if (!res.ProtocolVersion || res.ProtocolVersion !== connection.clientProtocol) {
+                        $(connection).triggerHandler(events.onError, ["You are using a version of the client that isn't compatible with the server. Client version " + connection.clientProtocol + ", server version " + res.ProtocolVersion + "."]);
+                        deferred.reject("You are using a version of the client that isn't compatible with the server. Client version " + connection.clientProtocol + ", server version " + res.ProtocolVersion + ".");
                         return;
                     }
 
@@ -2179,5 +2181,4 @@
 /// <reference path="jquery.signalR.core.js" />
 (function ($) {
     $.signalR.version = "2.0.0-beta1";
-    $.signalR.protocol = "1.3";
 }(window.jQuery));

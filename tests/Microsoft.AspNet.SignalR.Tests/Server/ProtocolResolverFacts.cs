@@ -16,6 +16,7 @@ namespace Microsoft.AspNet.SignalR.Tests.Server
         [InlineData("1.0", "1.5", "1.5", "1.5")]
         [InlineData("1.0", "1.5", "1.9", "1.5")]
         [InlineData("1.0", "1.1", "1.0.5", "1.0.5")]
+        [InlineData("1.0", "1.1", "", "1.0")]
         public void ProtocolResolvesCorrectly(string minProtocol, string maxProtocol, string clientProtocol, string expectedProtocol)
         {
             var request = new Mock<IRequest>();
