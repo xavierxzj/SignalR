@@ -29,6 +29,16 @@
         connection.start({ transport: transport });
 
         return savedAjax;
+    },
+    testInvalidProtocol = function (connection, transport, end, assert, protocol) {
+        $.signalR.protocol = protocol;
+
+        connection.start({ transport: transport }).done(function () {
+            assert.ok(false, "Transport started successfully.");
+        }).fail(function () {
+            assert.comment("Transport failed to start with incorrect protocol.");
+            end();
+        });
     };
 
     testUtilities.runWithAllTransports(function (transport) {
@@ -85,18 +95,23 @@
             };
         });
 
-        QUnit.asyncTimeoutTest(transport + ": connection fails to start with invalid protocol.", testUtilities.defaultTestTimeout, function (end, assert, testName) {
+        QUnit.asyncTimeoutTest(transport + ": connection fails to start with newer protocol.", testUtilities.defaultTestTimeout, function (end, assert, testName) {
             var connection = testUtilities.createConnection("signalr", end, assert, testName, false),
                 savedProtocol = $.signalR.protocol;
 
-            $.signalR.protocol = 1337;
+            testInvalidProtocol(connection, transport, end, assert, 1337);
 
-            connection.start({ transport: transport }).done(function() {
-                assert.ok(false, "Transport started successfully.");
-            }).fail(function() {
-                assert.comment("Transport failed to start with incorrect protocol.");
-                end();
-            });
+            return function () {
+                $.signalR.protocol = savedProtocol;
+                connection.stop();
+            };
+        });
+
+        QUnit.asyncTimeoutTest(transport + ": connection fails to start with older protocol.", testUtilities.defaultTestTimeout, function (end, assert, testName) {
+            var connection = testUtilities.createConnection("signalr", end, assert, testName, false),
+                savedProtocol = $.signalR.protocol;
+
+            testInvalidProtocol(connection, transport, end, assert, .1337);
 
             return function () {
                 $.signalR.protocol = savedProtocol;

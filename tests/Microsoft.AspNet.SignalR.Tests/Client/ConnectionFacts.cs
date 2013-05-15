@@ -11,32 +11,30 @@ using Microsoft.AspNet.SignalR.Client.Transports;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Moq;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Microsoft.AspNet.SignalR.Tests
 {
     public class ConnectionFacts : IDisposable
     {
-        [Fact]
-        public void NegotiatePassesClientProtocol()
+        [Theory]
+        [InlineData("?clientProtocol=","")]
+        [InlineData("&clientProtocol=", "foo=bar")]
+        public void NegotiatePassesClientProtocolCorrectly(string clientProtocolParameter, string connectionQueryString)
         {
-            var connection = new Client.Connection("http://test");
-            var mre = new ManualResetEventSlim();
+            var connection = new Client.Connection("http://test", connectionQueryString);
 
             try
             {
                 connection.Start(new LongPollingTransport(new UrlInspectingHttpClient((url) =>
                 {
-                    Assert.True(url.Contains("clientProtocol=" + connection.Protocol.ToString()));
-
-                    mre.Set();
-                })));
+                    Assert.True(url.Contains(clientProtocolParameter + connection.Protocol.ToString()));
+                }))).Wait();
             }
             catch 
             {
                 // Swallow exceptions because the custom http client that we pass will throw unimplemented exceptions.
             }
-
-            Assert.True(mre.Wait(TimeSpan.FromSeconds(2)));
         }
 
         [Fact]

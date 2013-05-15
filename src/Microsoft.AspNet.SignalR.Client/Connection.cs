@@ -32,8 +32,6 @@ namespace Microsoft.AspNet.SignalR.Client
     {
         internal static readonly TimeSpan DefaultAbortTimeout = TimeSpan.FromSeconds(30);
 
-        private static readonly Version _protocol = new Version(1, 3);
-
         private static Version _assemblyVersion;
 
         private IClientTransport _transport;
@@ -162,15 +160,12 @@ namespace Microsoft.AspNet.SignalR.Client
             TraceLevel = TraceLevels.All;
             TraceWriter = new DebugTextWriter();
             Headers = new HeaderDictionary(this);
+
+            // Current client protocol
+            Protocol = new Version(1, 3);
         }
 
-        public Version Protocol
-        {
-            get
-            {
-                return _protocol;
-            }
-        }
+        public Version Protocol { get; set; }
 
         /// <summary>
         /// Object to store the various keep alive timeout values
@@ -449,17 +444,17 @@ namespace Microsoft.AspNet.SignalR.Client
             return false;
         }
 
-        private static void VerifyProtocolVersion(string versionString)
+        private void VerifyProtocolVersion(string versionString)
         {
             Version version;
 
             if (String.IsNullOrEmpty(versionString) ||
                 !TryParseVersion(versionString, out version) ||
-                version != _protocol)
+                version != Protocol)
             {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
                                                                   Resources.Error_IncompatibleProtocolVersion,
-                                                                  _protocol.ToString(),
+                                                                  Protocol,
                                                                   versionString ?? "null"));
             }
         }
