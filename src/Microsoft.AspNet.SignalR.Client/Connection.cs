@@ -164,7 +164,7 @@ namespace Microsoft.AspNet.SignalR.Client
             Headers = new HeaderDictionary(this);
         }
 
-        Version IConnection.Protocol
+        public Version Protocol
         {
             get
             {

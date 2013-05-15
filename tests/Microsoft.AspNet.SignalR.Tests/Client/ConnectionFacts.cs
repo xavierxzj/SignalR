@@ -26,7 +26,7 @@ namespace Microsoft.AspNet.SignalR.Tests
             {
                 connection.Start(new LongPollingTransport(new UrlInspectingHttpClient((url) =>
                 {
-                    Assert.True(url.Contains("clientProtocol=" + ((Client.IConnection)connection).Protocol.ToString()));
+                    Assert.True(url.Contains("clientProtocol=" + connection.Protocol.ToString()));
 
                     mre.Set();
                 })));
@@ -135,7 +135,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 var aggEx = Assert.Throws<AggregateException>(() => connection.Start(transport.Object).Wait());
                 var ex = aggEx.Unwrap();
                 Assert.IsType(typeof(InvalidOperationException), ex);
-                Assert.Equal("You are using a version of the client that isn't compatible with the server. Client version " + ((Client.IConnection)connection).Protocol.ToString() + ", server version null.", ex.Message);
+                Assert.Equal("You are using a version of the client that isn't compatible with the server. Client version " + connection.Protocol.ToString() + ", server version null.", ex.Message);
             }
 
             [Fact]
@@ -180,7 +180,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
+                             ProtocolVersion = connection.Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -202,7 +202,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
+                             ProtocolVersion = connection.Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -228,7 +228,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
+                             ProtocolVersion = connection.Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -247,7 +247,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
+                             ProtocolVersion = connection.Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
@@ -267,7 +267,7 @@ namespace Microsoft.AspNet.SignalR.Tests
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromResult(new NegotiationResponse
                          {
-                             ProtocolVersion = ((Client.IConnection)connection).Protocol.ToString(),
+                             ProtocolVersion = connection.Protocol.ToString(),
                              ConnectionId = "Something"
                          }));
 
